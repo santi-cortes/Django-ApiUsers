@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta lang="es" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Mi agenda</title>
+    <style type="text/css">
+      * {
+        font-family: "Gill Sans", "Gill Sans MT", Calibri, "Trebuchet MS",
+          sans-serif;
+      }
+
+      html {
+        width: 100%;
+        height: 100%;
+        margin: 0;
+        padding: 0;
+        font-family: monospace;
+      }
+
+      body {
+        background-image: linear-gradient(
+          135deg,
+          #009ceb 0,
+          #009af6 4.17%,
+          #0098fe 8.33%,
+          #0095ff 12.5%,
+          #0091ff 16.67%,
+          #008cff 20.83%,
+          #0087ff 25%,
+          #0080ff 29.17%,
+          #4479ff 33.33%,
+          #7271fa 37.5%,
+          #9169f1 41.67%,
+          #aa5fe5 45.83%,
+          #be55d8 50%,
+          #cf4ac9 54.17%,
+          #dc40ba 58.33%,
+          #e736aa 62.5%,
+          #ee2d99 66.67%,
+          #f42788 70.83%,
+          #f62677 75%,
+          #f72a66 79.17%,
+          #f53255 83.33%,
+          #f23b45 87.5%,
+          #ec4535 91.67%,
+          #e54f24 95.83%,
+          #dc590d 100%
+        );
+      }
+
+      .modal {
+        background-color: white;
+        width: 35vw;
+        height: 380px;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-around;
+        align-items: center;
+        border-radius: 20px;
+      }
+
+      .box-modal {
+        bottom: 0;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 100%;
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        background-color: rgba(190, 190, 190, 0.274);
+        position: absolute;
+      }
+
+      .title-modal {
+        font-size: 25px;
+        width: 100%;
+        text-align: center;
+        display: flex;
+        justify-content: center;
+      }
+
+      .icon-x {
+        position: absolute;
+        right: 34vw;
+        background-color: transparent;
+        border: none;
+        cursor: pointer;
+      }
+
+      .icon-x img {
+        width: 15px;
+      }
+
+      .formulario {
+        display: flex;
+        justify-content: flex-start;
+        flex-direction: column;
+        gap: 45px;
+        width: 90%;
+        height: 280px;
+      }
+
+      .formulario input {
+        border-radius: 6px;
+        border: 1px solid rgb(207, 207, 207);
+        height: 20px;
+        padding: 5px;
+      }
+
+      .btngo {
+        transition: background-color, transform 0.3s ease;
+        width: 100%;
+        height: 32px;
+        padding: 5px;
+      }
+
+      .btngo:hover {
+        background-color: rgba(103, 207, 248, 0.863);
+        transform: scale(1.06);
+      }
+
+      .box-agenda {
+        background-color: white;
+        height: 100%;
+        border-radius: 20px;
+        padding: 15px;
+      }
+
+      .box-agenda h1 {
+        text-align: center;
+      }
+
+      .agendastyle {
+        height: 60px;
+        padding: 8px;
+        display: flex;
+        justify-content: flex-start;
+        flex-direction: row;
+        gap: 20px;
+        border: 1px solid #aaaaaa;
+        border-radius: 25px;
+        margin: 10px;
+      }
+    </style>
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.3/jquery.min.js"
+      integrity="sha512-STof4xm1wgkfm7heWqFJVn58Hm3EtS31XFaagaa8VMReCXAkQnJZ+jEy8PCC/iT18dFy95WcExNHFTqLyp72eQ=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    ></script>
+  </head>
+  <body>
+    <div class="box-modal">
+      <div class="modal">
+        <h3 class="title-modal">
+          NUEVA ENTRADA DE LISTA
+          <button class="icon-x" onclick="exitModal()">
+            <img
+              src="https://cdn-icons-png.flaticon.com/512/3416/3416079.png"
+              alt=""
+            />
+          </button>
+        </h3>
+        {% csrf_token %}
+        <div class="formulario">
+          <input type="text" placeholder="Nombre" id="nom" autocomplete="off" />
+          <input
+            type="text"
+            placeholder="Usuario"
+            id="usr"
+            autocomplete="off"
+          />
+          <input
+            type="date"
+            placeholder="Fecha de creación"
+            id="dtc"
+            value="2023-01-25"
+          />
+          <input
+            type="date"
+            placeholder="Fecha de modificación"
+            id="dtm"
+            value=""
+          />
+
+          <input type="button" value="Guardar" class="btngo" />
+        </div>
+      </div>
+    </div>
+    <div class="box-agenda">
+      <h1>ELEMENTOS DE LA LISTA</h1>
+      {% for user in object_list %}
+      <div class="agendastyle">
+        <p>{{ user.namel }}</p>
+        <p>{{ user.userl }}</p>
+        <p>{{ user.datecl }}</p>
+        <p>{{ user.dateml }}</p>
+      </div>
+      {% endfor %}
+    </div>
+    <script>
+      let boxModal = document.querySelector(".box-modal");
+
+      const exitModal = () => {
+        boxModal.style.display = "none";
+      };
+    </script>
+    <script type="text/javascript">
+      $(".btngo").click(function () {
+        var datafr = {
+          nm: document.getElementById("nom").value,
+          us: document.getElementById("usr").value,
+          dtc: document.getElementById("dtc").value,
+          dtm: document.getElementById("dtm").value,
+        };
+        console.log(datafr);
+        $.post("register/person/", { datajson: JSON.stringify(datafr) }).done(
+          function (data) {
+            location.reload();
+          }
+        );
+      });
+    </script>
+  </body>
+</html>
